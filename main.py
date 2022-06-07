@@ -15,6 +15,7 @@ url = 'https://data.primariatm.ro/dataset/56ac723e-62af-443a-8811-554db730a961/r
 window = Tk()
 window.title('Proiect LP')
 window.resizable(False, False)
+window.configure(bg='#FEEECF')
 window.geometry("1070x500")
 indicatori = list()
 indexes = list()
@@ -46,8 +47,9 @@ def descarcare(event):
             for line in response:
                 file.write(line)
             download_status['text'] = "Descărcarea s-a terminat!"
+            download_status['fg'] = 'green'
             file.close()
-            with open('out.csv', 'r') as f_in:
+            with open('out.csv', encoding='utf8') as f_in:
                 csv_reader = csv.reader(f_in, delimiter=',')
                 line_count = 0
                 for row in csv_reader:
@@ -65,12 +67,13 @@ def descarcare(event):
                         meniu_indicatori["values"] = indicatori
     else:
         download_status['text'] = "Fișierul există deja"
+        download_status['fg'] = 'red'
 
 year_start = ""
 year_end = ""
 
 def find_year_data(year_start, year_end):
-    with open("out.csv") as f_in:
+    with open('out.csv', encoding='utf8') as f_in:
         csv_reader = csv.reader(f_in, delimiter=",")
         line_count = 0
         for line in csv_reader:
@@ -106,7 +109,7 @@ def get_date(event):
         if year_range["text"] == "":
             export_data.place(x=150, y=335)
 
-setare_date = Button(window, text="Setare date", font=("Tahoma", 12), width=11, height=1)
+setare_date = Button(window, text="Setare date", font=("Tahoma", 12), width=11, height=1, bg='dodgerblue', fg='white')
 setare_date.bind('<Button-1>', get_date)
 
 if os.path.exists('out.csv'):
@@ -127,7 +130,7 @@ if os.path.exists('out.csv'):
                 line_count += 1
                 meniu_indicatori["values"] = indicatori
 
-download = Button(window, text="Descărcare", font=('Tahoma', 12), width=11, height=1)
+download = Button(window, text="Descărcare", font=('Tahoma', 12), width=11, height=1, bg='dodgerblue', fg='white')
 download.bind('<Button-1>', descarcare)
 download.place(x=25, y=25)
 
@@ -141,6 +144,7 @@ def export(event):
     data = data.transpose()
     data = data.reindex(index=data.index[::-1])
     fig = px.bar(data, labels={'index': 'Ani', 'value': meniu_indicatori.get()}, title="Siguranță și ordine publică")
+    fig.update_traces(marker_color='dodgerblue')
     fig.layout.update(showlegend=False)
     fig.write_image('chart.jpeg')
     img = (Image.open("chart.jpeg"))
@@ -150,7 +154,7 @@ def export(event):
     poza.image = new_image
     poza.place(x=430, y=25)
 
-export_data = Button(window, text="Afișare grafic", font=('Tahoma', 12), width=11, height=1)
+export_data = Button(window, text="Afișare grafic", font=('Tahoma', 12), width=11, height=1, bg='dodgerblue', fg='white')
 export_data.bind('<Button-1>', export)
 
 window.mainloop()
